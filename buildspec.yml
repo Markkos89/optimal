@@ -36,5 +36,5 @@ phases:
       - printf '[{"name":"ECSContainer-'$SERVICE_NAME'-'$AWS_DEFAULT_REGION'","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 artifacts:
     files: 
-      - imagedefinitions.json
       - appspec.yml
+      - imagedefinitions.json
