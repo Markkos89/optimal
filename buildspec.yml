@@ -4,7 +4,7 @@ env:
 phases:
   install:
     runtime-versions:
-      nodejs: latest
+      nodejs: 16
     commands:
       - echo Entered the install phase...
       - git submodule init
