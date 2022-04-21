@@ -1,5 +1,6 @@
 version: 0.2
-
+env: 
+  git-credential-helper: yes
 phases:
   install:
     runtime-versions:
@@ -10,7 +11,8 @@ phases:
       - git submodule update
   pre_build:
     commands:
-      - REPOSITORY_URI=907263135169.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/ecrrepository-app-$AWS_DEFAULT_REGION
+      - git submodule update --init --recursive
+      - REPOSITORY_URI=171489211440.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/ecrrepository-app-$AWS_DEFAULT_REGION
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
@@ -27,10 +29,12 @@ phases:
       - echo Pushing the Docker images...
       - echo Logging in to Amazon ECR...
       - aws --version
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin 907263135169.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin 171489211440.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
       - printf '[{"name":"ECSContainer-'$SERVICE_NAME'-'$AWS_DEFAULT_REGION'","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 artifacts:
-    files: imagedefinitions.json
+    files: 
+      - appspec.yml
+      - imagedefinitions.json
