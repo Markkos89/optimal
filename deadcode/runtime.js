@@ -1,4 +1,3 @@
-throw new Error('dead code');
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {VOXLoader} from './VOXLoader.js';
@@ -30,6 +29,7 @@ import {ShadertoyRenderer} from './shadertoy.js';
 // import * as GifuctJs from './gifuct-js.js';
 import {baseUnit, rarityColors} from './constants.js';
 import metaversefileApi from './metaversefile-api.js';
+throw new Error('dead code');
 const {useLocalPlayer} = metaversefileApi;
 
 // import R3FDemo from 'ipfs://Qme9Cb4r1crEPwi4x823yZZAZFM4ZXvhSX9wNdXABA2pYF?.jsx';
@@ -82,12 +82,12 @@ const startMonetization = (instanceId, monetizationPointer, ownerAddress) => {
   const ethereumAddress = loginManager.getAddress();
   if (ethereumAddress && ethereumAddress === ownerAddress) {
     monetization.dispatchEvent(new Event('monetizationstart'));
-    monetization.state = "started";
+    monetization.state = 'started';
   } else if (document.monetization && monetizationPointer) {
     monetization.dispatchEvent(new Event('monetizationstart'));
-    monetization.state = "started";
+    monetization.state = 'started';
   }
-}
+};
 
 const _clone = o => JSON.parse(JSON.stringify(o));
 const _makeFilesProxy = srcUrl => new Proxy({}, {
@@ -215,19 +215,19 @@ const runComponentTypes = [
 ];
 
 const _loadMetaversefile = async (file, {contentId = null, instanceId = null, autoScale = true, monetizationPointer = null, ownerAddress = null} = {}) => {
-  let srcUrl = file.url || URL.createObjectURL(file);
-  
+  const srcUrl = file.url || URL.createObjectURL(file);
+
   const res = await fetch(srcUrl);
   const j = await res.json();
-  let {start_url, physics, physics_url, components} = j;
+  const {start_url, physics, physics_url, components} = j;
   if (typeof j.autoScale === 'boolean') {
     autoScale = j.autoScale;
   }
-  
+
   /* if (/^\./.test(srcUrl)) {
     srcUrl = new URL(srcUrl, location.href).href;
   } */
-  
+
   return await runtime.loadFile({
     url: start_url,
     name: start_url,
@@ -245,40 +245,40 @@ const _loadMetaversefile = async (file, {contentId = null, instanceId = null, au
   });
 };
 const _loadRtfjs = async (file, {contentId = null, instanceId = null, parentUrl = null, autoScale = true, monetizationPointer = null, ownerAddress = null} = {}) => {
-  let srcUrl = file.url || URL.createObjectURL(file);
+  const srcUrl = file.url || URL.createObjectURL(file);
 
   const u = new URL(srcUrl, parentUrl).href;
 
   // console.log('got start url', start_url);
-  
+
   const m = await import(u);
   const fn = m.default;
   // console.log('got fn', fn);
-  
+
   const o = new THREE.Object3D();
   o.contentId = contentId;
   o.isRtfjs = true;
   o.getPhysicsIds = () => app.physicsIds;
   o.destroy = () => {
     appManager.destroyApp(appId);
-    
+
     (async () => {
       const roots = ReactThreeFiber._roots;
       const root = roots.get(rootDiv);
-      const fiber = root?.fiber
+      const fiber = root?.fiber;
       if (fiber) {
-        const state = root?.store.getState()
-        if (state) state.internal.active = false
+        const state = root?.store.getState();
+        if (state) state.internal.active = false;
         await new Promise((accept, reject) => {
           ReactThreeFiber.reconciler.updateContainer(null, fiber, null, () => {
             if (state) {
               // setTimeout(() => {
-                state.events.disconnect?.()
-                // state.gl?.renderLists?.dispose?.()
-                // state.gl?.forceContextLoss?.()
-                ReactThreeFiber.dispose(state)
-                roots.delete(canvas)
-                // if (callback) callback(canvas)
+              state.events.disconnect?.();
+              // state.gl?.renderLists?.dispose?.()
+              // state.gl?.forceContextLoss?.()
+              ReactThreeFiber.dispose(state);
+              roots.delete(canvas);
+              // if (callback) callback(canvas)
               // }, 500)
             }
             accept();
@@ -287,7 +287,7 @@ const _loadRtfjs = async (file, {contentId = null, instanceId = null, parentUrl 
       }
     })();
   };
-  
+
   const renderer = getRenderer();
   const sizeVector = renderer.getSize(new THREE.Vector2());
   const rootDiv = document.createElement('div');
@@ -304,7 +304,7 @@ const _loadRtfjs = async (file, {contentId = null, instanceId = null, parentUrl 
     renderer2.setPixelRatio = () => {
       // nothing
     };
-    
+
     ReactThreeFiber.render(
       React.createElement(ErrorBoundary, {}, [
         React.createElement(fn, {
@@ -336,10 +336,10 @@ const _loadRtfjs = async (file, {contentId = null, instanceId = null, parentUrl 
           }
         },
         frameloop: 'demand',
-      }
+      },
     );
   };
-  
+
   const appId = appManager.getNextAppId();
   const app = appManager.createApp(appId);
   app.addEventListener('frame', e => {
@@ -347,21 +347,21 @@ const _loadRtfjs = async (file, {contentId = null, instanceId = null, parentUrl 
   });
   app.rootObject = o;
   const appContextObject = makeAppContextObject(app);
-  
+
   return o;
 };
 
 const _loadTjs = async (file, {contentId = null, instanceId = null, parentUrl = null, autoScale = true, monetizationPointer = null, ownerAddress = null} = {}) => {
-  let srcUrl = file.url || URL.createObjectURL(file);
+  const srcUrl = file.url || URL.createObjectURL(file);
 
   const u = new URL(srcUrl, parentUrl || window.location.href).href;
 
   // console.log('got start url', u);
-  
+
   const m = await import(u);
   const fn = m.default;
   // console.log('got fn', fn);
-  
+
   const o = new THREE.Object3D();
   o.contentId = contentId;
   o.isTjs = true;
@@ -372,7 +372,7 @@ const _loadTjs = async (file, {contentId = null, instanceId = null, parentUrl = 
     }
     appManager.destroyApp(appId);
   };
-  
+
   let userObject = null;
   const appId = appManager.getNextAppId();
   const app = appManager.createApp(appId);
@@ -387,7 +387,7 @@ const _loadTjs = async (file, {contentId = null, instanceId = null, parentUrl = 
   if (userObject) {
     o.add(userObject);
   }
-  
+
   return o;
 };
 
@@ -406,7 +406,7 @@ const _loadGltf = async (file, {optimize = false, physics = false, physics_url =
       gltfLoader.load(srcUrl, accept, function onprogress() {}, reject);
     });
     startMonetization(instanceId, monetizationPointer, ownerAddress);
-  } catch(err) {
+  } catch (err) {
     console.warn(err);
   } finally {
     if (/^blob:/.test(srcUrl)) {
@@ -422,11 +422,11 @@ const _loadGltf = async (file, {optimize = false, physics = false, physics_url =
       o.traverse(o => {
         if (o.isMesh) {
           const idleAnimation = animations.find(a => a.name === 'idle');
-          let clip = idleAnimation || animations[animationMixers.length];
+          const clip = idleAnimation || animations[animationMixers.length];
           if (clip) {
             const mesh = o;
             const mixer = new THREE.AnimationMixer(mesh);
-            
+
             const action = mixer.clipAction(clip);
             action.play();
 
@@ -453,8 +453,8 @@ const _loadGltf = async (file, {optimize = false, physics = false, physics_url =
       const _loadLightmap = async (parser, materialIndex) => {
         const lightmapDef = parser.json.materials[materialIndex].extensions.MOZ_lightmap;
         const [material, lightMap] = await Promise.all([
-          parser.getDependency("material", materialIndex),
-          parser.getDependency("texture", lightmapDef.index)
+          parser.getDependency('material', materialIndex),
+          parser.getDependency('texture', lightmapDef.index),
         ]);
         material.lightMap = lightMap;
         material.lightMapIntensity = lightmapDef.intensity !== undefined ? lightmapDef.intensity : 1;
@@ -474,7 +474,7 @@ const _loadGltf = async (file, {optimize = false, physics = false, physics_url =
       }
     };
     _loadLightmaps();
-    
+
     const _loadUvScroll = o => {
       const textureToData = new Map();
       const registeredTextures = [];
@@ -482,7 +482,7 @@ const _loadGltf = async (file, {optimize = false, physics = false, physics_url =
         if (o.isMesh && o?.userData?.gltfExtensions?.MOZ_hubs_components?.['uv-scroll']) {
           const uvScrollSpec = o.userData.gltfExtensions.MOZ_hubs_components['uv-scroll'];
           const {increment, speed} = uvScrollSpec;
-          
+
           const mesh = o; // this.el.getObject3D("mesh") || this.el.getObject3D("skinnedmesh");
           const {material} = mesh;
           if (material) {
@@ -495,7 +495,7 @@ const _loadGltf = async (file, {optimize = false, physics = false, physics_url =
 
             // We store mesh here instead of the material directly because we end up swapping out the material in injectCustomShaderChunks.
             // We need material in the first place because of MobileStandardMaterial
-            const instance = { component: spec, mesh };
+            const instance = {component: spec, mesh};
 
             spec.instance = instance;
             spec.map = material.map || material.emissiveMap;
@@ -503,14 +503,14 @@ const _loadGltf = async (file, {optimize = false, physics = false, physics_url =
             if (spec.map && !textureToData.has(spec.map)) {
               textureToData.set(spec.map, {
                 offset: new THREE.Vector2(),
-                instances: [instance]
+                instances: [instance],
               });
               registeredTextures.push(spec.map);
             } else if (!spec.map) {
-              console.warn("Ignoring uv-scroll added to mesh with no scrollable texture.");
+              console.warn('Ignoring uv-scroll added to mesh with no scrollable texture.');
             } else {
               console.warn(
-                "Multiple uv-scroll instances added to objects sharing a texture, only the speed/increment from the first one will have any effect"
+                'Multiple uv-scroll instances added to objects sharing a texture, only the speed/increment from the first one will have any effect',
               );
               textureToData.get(spec.map).instances.push(instance);
             }
@@ -520,8 +520,8 @@ const _loadGltf = async (file, {optimize = false, physics = false, physics_url =
             const dt = now - lastTimestamp;
             for (let i = 0; i < registeredTextures.length; i++) {
               const map = registeredTextures[i];
-              const { offset, instances } = textureToData.get(map);
-              const { component } = instances[0];
+              const {offset, instances} = textureToData.get(map);
+              const {component} = instances[0];
 
               offset.addScaledVector(component.data.speed, dt / 1000);
 
@@ -603,8 +603,8 @@ const _loadGltf = async (file, {optimize = false, physics = false, physics_url =
     }
   } */
 
-  let physicsIds = [];
-  let staticPhysicsIds = [];
+  const physicsIds = [];
+  const staticPhysicsIds = [];
   mesh.contentId = contentId;
   mesh.run = async () => {
     let physicsMesh = null;
@@ -623,7 +623,7 @@ const _loadGltf = async (file, {optimize = false, physics = false, physics_url =
       physicsMesh.quaternion.copy(mesh.quaternion);
       physicsMesh.scale.copy(mesh.scale);
     }
-    
+
     if (physicsMesh) {
       const physicsId = physicsManager.addGeometry(physicsMesh);
       physicsIds.push(physicsId);
@@ -687,13 +687,13 @@ const _loadGltf = async (file, {optimize = false, physics = false, physics_url =
   };
   mesh.destroy = () => {
     appManager.destroyApp(appId);
-    
+
     for (const physicsId of physicsIds) {
       physicsManager.removeGeometry(physicsId);
     }
     physicsIds.length = 0;
     staticPhysicsIds.length = 0;
-    
+
     for (const fn of componentUnloadFns) {
       fn();
     }
@@ -724,7 +724,7 @@ const _loadGltf = async (file, {optimize = false, physics = false, physics_url =
 
     jitterObject.update(e.data.timeDiff);
   });
-  
+
   return mesh;
 };
 const _loadVrm = async (file, {files = null, parentUrl = null, components = [], contentId = null, instanceId = null, monetizationPointer = null, ownerAddress = null} = {}) => {
@@ -742,7 +742,7 @@ const _loadVrm = async (file, {files = null, parentUrl = null, components = [], 
       gltfLoader.load(srcUrl, accept, function onprogress() {}, reject);
     });
     startMonetization(instanceId, monetizationPointer, ownerAddress);
-  } catch(err) {
+  } catch (err) {
     console.warn(err);
   } finally {
     if (/^blob:/.test(srcUrl)) {
@@ -770,22 +770,22 @@ const _loadVrm = async (file, {files = null, parentUrl = null, components = [], 
     }
   });
 
-  let physicsIds = [];
-  let staticPhysicsIds = [];
+  const physicsIds = [];
+  const staticPhysicsIds = [];
   o.run = async () => {
     const physicsId = physicsManager.addBoxGeometry(
       o.position.clone()
         .add(
-          new THREE.Vector3(0, 1.5/2, 0)
-            .applyQuaternion(o.quaternion)
+          new THREE.Vector3(0, 1.5 / 2, 0)
+            .applyQuaternion(o.quaternion),
         ),
-        o.quaternion,
-        new THREE.Vector3(0.3, 1.5/2, 0.3),
-        false
+      o.quaternion,
+      new THREE.Vector3(0.3, 1.5 / 2, 0.3),
+      false,
     );
     physicsIds.push(physicsId);
     staticPhysicsIds.push(physicsId);
-    
+
     // elide expensive bone updates; this should not be called if wearing the avatar
     const skinnedMeshes = [];
     o.traverse(o => {
@@ -811,7 +811,7 @@ const _loadVrm = async (file, {files = null, parentUrl = null, components = [], 
   };
   o.destroy = () => {
     appManager.destroyApp(appId);
-    
+
     for (const physicsId of physicsIds) {
       physicsManager.removeGeometry(physicsId);
     }
@@ -825,13 +825,13 @@ const _loadVrm = async (file, {files = null, parentUrl = null, components = [], 
   o.geometry = {
     boundingBox: new THREE.Box3().setFromObject(o),
   };
-  
+
   const appId = appManager.getNextAppId();
   const app = appManager.createApp(appId);
   app.addEventListener('frame', e => {
     jitterObject.update(e.data.timeDiff);
   });
-  
+
   return o;
 };
 const _loadVox = async (file, {files = null, contentId = null, parentUrl = null, instanceId = null, monetizationPointer = null, ownerAddress = null} = {}) => {
@@ -851,7 +851,7 @@ const _loadVox = async (file, {files = null, contentId = null, parentUrl = null,
       }).load(srcUrl, accept, function onprogress() {}, reject);
     });
     startMonetization(instanceId, monetizationPointer, ownerAddress);
-  } catch(err) {
+  } catch (err) {
     console.warn(err);
   }
   o.contentId = contentId;
@@ -879,7 +879,7 @@ const _loadImg = async (file, {files = null, contentId = null, instanceId = null
     img.onerror = err => {
       reject(err);
       _cleanup();
-    }
+    };
     const _cleanup = () => {
       gcFiles && URL.revokeObjectURL(u);
     };
@@ -897,8 +897,8 @@ const _loadImg = async (file, {files = null, contentId = null, instanceId = null
   }
   const geometry = new THREE.PlaneBufferGeometry(width, height);
   geometry.boundingBox = new THREE.Box3(
-    new THREE.Vector3(-width/2, -height/2, -0.1),
-    new THREE.Vector3(width/2, height/2, 0.1),
+    new THREE.Vector3(-width / 2, -height / 2, -0.1),
+    new THREE.Vector3(width / 2, height / 2, 0.1),
   );
   const colors = new Float32Array(geometry.attributes.position.array.length);
   colors.fill(1, 0, colors.length);
@@ -920,14 +920,14 @@ const _loadImg = async (file, {files = null, contentId = null, instanceId = null
   const mesh = new THREE.Mesh(geometry, material);
   mesh.frustumCulled = false;
   mesh.contentId = contentId;
-  let physicsIds = [];
-  let staticPhysicsIds = [];
+  const physicsIds = [];
+  const staticPhysicsIds = [];
   mesh.run = async () => {
     const physicsId = physicsManager.addBoxGeometry(
-      mesh.position,        
+      mesh.position,
       mesh.quaternion,
-      new THREE.Vector3(width/2, height/2, 0.01),
-      false
+      new THREE.Vector3(width / 2, height / 2, 0.01),
+      false,
     );
     physicsIds.push(physicsId);
     staticPhysicsIds.push(physicsId);
@@ -955,7 +955,7 @@ const _loadGif = async (file, {files = null, contentId = null, instanceId = null
   if (!gifLoader) {
     gifLoader = new GIFLoader();
   }
-  
+
   let u = file.url || URL.createObjectURL(file);
   if (files && _isResolvableUrl(u)) {
     u = files[_dotifyUrl(u)];
@@ -979,13 +979,13 @@ const _loadGif = async (file, {files = null, contentId = null, instanceId = null
   });
   const model = new THREE.Mesh(geometry, material);
   model.frustumCulled = false;
-  
+
   const mesh = new THREE.Object3D();
   mesh.add(model);
   mesh.contentId = contentId;
   let textures;
-  let physicsIds = [];
-  let staticPhysicsIds = [];
+  const physicsIds = [];
+  const staticPhysicsIds = [];
   mesh.run = async () => {
     const gifId = await gifLoader.createGif(u);
     const frames = await gifLoader.renderFrames(gifId);
@@ -996,7 +996,7 @@ const _loadGif = async (file, {files = null, contentId = null, instanceId = null
       t.needsUpdate = true;
       return t;
     });
-    
+
     // set scale
     const frame = frames[0];
     const {width, height} = frame;
@@ -1011,13 +1011,13 @@ const _loadGif = async (file, {files = null, contentId = null, instanceId = null
       worldHeight = 1;
     }
     model.scale.set(worldWidth, worldHeight, 1);
-    
+
     // add physics mesh
     const physicsId = physicsManager.addBoxGeometry(
       mesh.position,
       mesh.quaternion,
-      new THREE.Vector3(worldWidth/2, worldHeight/2, 0.01),
-      false
+      new THREE.Vector3(worldWidth / 2, worldHeight / 2, 0.01),
+      false,
     );
     physicsIds.push(physicsId);
     staticPhysicsIds.push(physicsId);
@@ -1048,13 +1048,13 @@ const _loadGif = async (file, {files = null, contentId = null, instanceId = null
       died: false,
     };
   };
-  
+
   const appId = appManager.getNextAppId();
   const app = appManager.createApp(appId);
   app.addEventListener('frame', () => {
     mesh.update();
   });
-  
+
   return mesh;
 };
 /* const _makeAppUrl = appId => {
@@ -1265,7 +1265,7 @@ const _loadScript = async (file, {files = null, parentUrl = null, contentId = nu
       physicsManager.removeGeometry(physicsId);
     }
     app.physicsIds.length = 0;
-    
+
     const localPopovers = app.popovers.slice();
     for (const popover of localPopovers) {
       popovers.removePopover(popover);
@@ -1275,7 +1275,7 @@ const _loadScript = async (file, {files = null, parentUrl = null, contentId = nu
   mesh.getPhysicsIds = () => app.physicsIds;
   mesh.getComponents = () => components;
   mesh.getApp = () => app;
-  
+
   const jitterObject = hpManager.makeHitTracker();
   mesh.add(jitterObject);
   const appObject = new THREE.Object3D();
@@ -1286,7 +1286,7 @@ const _loadScript = async (file, {files = null, parentUrl = null, contentId = nu
   jitterObject.addEventListener('die', e => {
     mesh.dispatchEvent(e);
   });
-  
+
   mesh.hit = jitterObject.hit;
 
   const app = appManager.createApp(appId);
@@ -1299,7 +1299,7 @@ const _loadScript = async (file, {files = null, parentUrl = null, contentId = nu
   app.files = files || _makeFilesProxy(srcUrl);
 
   /* (async () => {
-    
+
   })(); */
 
   app.addEventListener('frame', e => {
@@ -1320,7 +1320,7 @@ const _loadManifestJson = async (file, {files = null, contentId = null, instance
 
   const res = await fetch(srcUrl);
   const j = await res.json();
-  let {start_url, physics, physics_url, components} = j;
+  const {start_url, physics, physics_url, components} = j;
   if (typeof j.autoScale === 'boolean') {
     autoScale = j.autoScale;
   }
@@ -1406,11 +1406,11 @@ const _loadScene = async (file, {contentId = null, files = null}) => {
   if (/^\.+\//.test(srcUrl)) {
     srcUrl = new URL(srcUrl, location.href).href;
   }
-  
+
   const res = await fetch(srcUrl);
   const j = await res.json();
   const {objects} = j;
-  
+
   const scene = new THREE.Object3D();
   scene.contentId = contentId;
 
@@ -1565,13 +1565,13 @@ const _loadPortal = async (file, {contentId = null}) => {
     [
       -2,
       0,
-      -2
+      -2,
     ],
     [
       2,
       4,
-      2
-    ]
+      2,
+    ],
   ];
   const center = new THREE.Vector3((extents[1][0] + extents[0][0]) / 2, (extents[1][1] + extents[0][1]) / 2, (extents[1][2] + extents[0][2]) / 2);
   const size = new THREE.Vector3(extents[1][0] - extents[0][0], extents[1][1] - extents[0][1], extents[1][2] - extents[0][2]);
@@ -1581,13 +1581,13 @@ const _loadPortal = async (file, {contentId = null}) => {
 
   const w = baseUnit;
   const planeGeometry = new THREE.PlaneBufferGeometry(size.x, size.z, size.x, size.z)
-    .applyMatrix4(new THREE.Matrix4().makeRotationFromQuaternion(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI/2)))
+    .applyMatrix4(new THREE.Matrix4().makeRotationFromQuaternion(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2)))
     .applyMatrix4(new THREE.Matrix4().makeTranslation(center.x, center.y, center.z));
   for (let i = 0; i < planeGeometry.attributes.position.array.length; i += 3) {
-    planeGeometry.attributes.position.array[i+1] = Math.random() * 0.2;
+    planeGeometry.attributes.position.array[i + 1] = Math.random() * 0.2;
   }
-  planeGeometry.setAttribute('particle', new THREE.BufferAttribute(new Float32Array(planeGeometry.attributes.position.array.length/3), 1));
-  planeGeometry.setAttribute('bar', new THREE.BufferAttribute(new Float32Array(planeGeometry.attributes.position.array.length/3), 1));
+  planeGeometry.setAttribute('particle', new THREE.BufferAttribute(new Float32Array(planeGeometry.attributes.position.array.length / 3), 1));
+  planeGeometry.setAttribute('bar', new THREE.BufferAttribute(new Float32Array(planeGeometry.attributes.position.array.length / 3), 1));
   geometries.push(planeGeometry);
 
   /* const numBars = 8;
@@ -1630,9 +1630,9 @@ const _loadPortal = async (file, {contentId = null}) => {
     const height = 0.2;
     const g = boxGeometry.clone()
       .applyMatrix4(new THREE.Matrix4().makeScale(width, height, width))
-      .applyMatrix4(new THREE.Matrix4().makeTranslation(center.x + width/2 + (-1/2 + Math.random()) * w * (1-width/2), 0.3/2 + Math.random() * (1-width/2), center.z + height/2 + (-1/2 + Math.random()) * w * (1-width/2)));
-    g.setAttribute('particle', new THREE.BufferAttribute(new Float32Array(g.attributes.position.array.length/3).fill(1), 1));
-    g.setAttribute('bar', new THREE.BufferAttribute(new Float32Array(g.attributes.position.array.length/3), 1));
+      .applyMatrix4(new THREE.Matrix4().makeTranslation(center.x + width / 2 + (-1 / 2 + Math.random()) * w * (1 - width / 2), 0.3 / 2 + Math.random() * (1 - width / 2), center.z + height / 2 + (-1 / 2 + Math.random()) * w * (1 - width / 2)));
+    g.setAttribute('particle', new THREE.BufferAttribute(new Float32Array(g.attributes.position.array.length / 3).fill(1), 1));
+    g.setAttribute('bar', new THREE.BufferAttribute(new Float32Array(g.attributes.position.array.length / 3), 1));
     geometries.push(g);
   }
 
@@ -1647,7 +1647,7 @@ const _loadPortal = async (file, {contentId = null}) => {
     new THREE.Vector3(extents[1][0], extents[1][1], extents[1][2]),
   );
   portalMesh.frustumCulled = false;
-  
+
   const o = new THREE.Object3D();
   o.add(portalMesh);
   o.contentId = contentId;
@@ -1657,7 +1657,7 @@ const _loadPortal = async (file, {contentId = null}) => {
     const {position} = useLocalPlayer();
 
     const now = Date.now();
-    portalMesh.material.uniforms.uTime.value = (now%500)/500;
+    portalMesh.material.uniforms.uTime.value = (now % 500) / 500;
     portalMesh.material.uniforms.uDistance.value = localBox.copy(portalMesh.boundingBox)
       .applyMatrix4(portalMesh.matrixWorld)
       .distanceToPoint(position);
@@ -1701,10 +1701,10 @@ class IFrameMesh extends THREE.Mesh {
 
     this.iframe = iframe;
   }
-  
+
   /* onBeforeRender(renderer, scene, camera, geometry, material, group) {
     super.onBeforeRender && super.onBeforeRender.apply(this, arguments);
-    
+
     console.log('before render', this.iframe);
   } */
 }
@@ -1721,11 +1721,11 @@ const _loadHtml = async (file, {contentId = null}) => {
   const s = 5;
   const width = 600 * f;
   const height = 400 * f;
-  const scale = Math.min(1/width, 1/height) * s;
+  const scale = Math.min(1 / width, 1 / height) * s;
 
   const iframe = document.createElement('iframe');
-  iframe.setAttribute('width', width); 
-  iframe.setAttribute('height', height); 
+  iframe.setAttribute('width', width);
+  iframe.setAttribute('height', height);
   iframe.style.width = width + 'px';
   iframe.style.height = height + 'px';
   // iframe.style.opacity = 0.75;
@@ -1738,11 +1738,11 @@ const _loadHtml = async (file, {contentId = null}) => {
   iframe.src = href;
   iframe.style.width = `${width}px`;
   iframe.style.height = `${height}px`;
-  
+
   let fov = 0;
   const _updateSize = () => {
     fov = iframeContainer.getFov();
-    
+
     // console.log('got fov', innerWidth, innerHeight, width, height);
     /* `
       translate(
@@ -1756,13 +1756,13 @@ const _loadHtml = async (file, {contentId = null}) => {
     // iframe.style.top = `${window.innerHeight/2 - height/2}px`;
     // iframe.style.border = '0';
     // iframe.style.transformStyle = 'preserve-3d';
-    
-    iframe.style.transform = `translate(${window.innerWidth/2 - width/2}px, ${window.innerHeight/2 - height/2}px)` + getObjectCSSMatrix(
+
+    iframe.style.transform = `translate(${window.innerWidth / 2 - width / 2}px, ${window.innerHeight / 2 - height / 2}px)` + getObjectCSSMatrix(
       localMatrix.compose(
         localVector.set(0, 0, 0),
         localQuaternion.set(0, 0, 0, 1),
-        localVector2.setScalar(scale)
-      )
+        localVector2.setScalar(scale),
+      ),
     );
   };
   _updateSize();
@@ -1775,31 +1775,30 @@ const _loadHtml = async (file, {contentId = null}) => {
   object2.frustumCulled = false;
 
   function epsilon(value) {
-		return value;
-    // return Math.abs(value) < 1e-10 ? 0 : value;
-	}
-  function getObjectCSSMatrix( matrix, cameraCSSMatrix ) {
-		var elements = matrix.elements;
-		var matrix3d = 'matrix3d(' +
-			epsilon( elements[ 0 ] ) + ',' +
-			epsilon( elements[ 1 ] ) + ',' +
-			epsilon( elements[ 2 ] ) + ',' +
-			epsilon( elements[ 3 ] ) + ',' +
-			epsilon( - elements[ 4 ] ) + ',' +
-			epsilon( - elements[ 5 ] ) + ',' +
-			epsilon( - elements[ 6 ] ) + ',' +
-			epsilon( - elements[ 7 ] ) + ',' +
-			epsilon( elements[ 8 ] ) + ',' +
-			epsilon( elements[ 9 ] ) + ',' +
-			epsilon( elements[ 10 ] ) + ',' +
-			epsilon( elements[ 11 ] ) + ',' +
-			epsilon( elements[ 12 ] ) + ',' +
-			epsilon( elements[ 13 ] ) + ',' +
-			epsilon( elements[ 14 ] ) + ',' +
-			epsilon( elements[ 15 ] ) +
+    return value;
+  }
+  function getObjectCSSMatrix(matrix, cameraCSSMatrix) {
+    var elements = matrix.elements;
+    var matrix3d = 'matrix3d(' +
+			epsilon(elements[0]) + ',' +
+			epsilon(elements[1]) + ',' +
+			epsilon(elements[2]) + ',' +
+			epsilon(elements[3]) + ',' +
+			epsilon(-elements[4]) + ',' +
+			epsilon(-elements[5]) + ',' +
+			epsilon(-elements[6]) + ',' +
+			epsilon(-elements[7]) + ',' +
+			epsilon(elements[8]) + ',' +
+			epsilon(elements[9]) + ',' +
+			epsilon(elements[10]) + ',' +
+			epsilon(elements[11]) + ',' +
+			epsilon(elements[12]) + ',' +
+			epsilon(elements[13]) + ',' +
+			epsilon(elements[14]) + ',' +
+			epsilon(elements[15]) +
 		')';
 
-		/* if ( isIE ) {
+    /* if ( isIE ) {
 
 			return 'translate(-50%,-50%)' +
 				'translate(' + _widthHalf + 'px,' + _heightHalf + 'px)' +
@@ -1808,35 +1807,34 @@ const _loadHtml = async (file, {contentId = null}) => {
 
 		} */
 
-		return matrix3d;
-	}
-  function getCameraCSSMatrix( matrix ) {
+    return matrix3d;
+  }
+  function getCameraCSSMatrix(matrix) {
     const {elements} = matrix;
-		return 'matrix3d(' +
-			epsilon( elements[ 0 ] ) + ',' +
-			epsilon( - elements[ 1 ] ) + ',' +
-			epsilon( elements[ 2 ] ) + ',' +
-			epsilon( elements[ 3 ] ) + ',' +
-			epsilon( elements[ 4 ] ) + ',' +
-			epsilon( - elements[ 5 ] ) + ',' +
-			epsilon( elements[ 6 ] ) + ',' +
-			epsilon( elements[ 7 ] ) + ',' +
-			epsilon( elements[ 8 ] ) + ',' +
-			epsilon( - elements[ 9 ] ) + ',' +
-			epsilon( elements[ 10 ] ) + ',' +
-			epsilon( elements[ 11 ] ) + ',' +
-			epsilon( elements[ 12 ] ) + ',' +
-			epsilon( - elements[ 13 ] ) + ',' +
-			epsilon( elements[ 14 ] ) + ',' +
-			epsilon( elements[ 15 ] ) +
+    return 'matrix3d(' +
+			epsilon(elements[0]) + ',' +
+			epsilon(-elements[1]) + ',' +
+			epsilon(elements[2]) + ',' +
+			epsilon(elements[3]) + ',' +
+			epsilon(elements[4]) + ',' +
+			epsilon(-elements[5]) + ',' +
+			epsilon(elements[6]) + ',' +
+			epsilon(elements[7]) + ',' +
+			epsilon(elements[8]) + ',' +
+			epsilon(-elements[9]) + ',' +
+			epsilon(elements[10]) + ',' +
+			epsilon(elements[11]) + ',' +
+			epsilon(elements[12]) + ',' +
+			epsilon(-elements[13]) + ',' +
+			epsilon(elements[14]) + ',' +
+			epsilon(elements[15]) +
 		')';
-
-	}
-  object2.onBeforeRender = (renderer) => {
+  }
+  object2.onBeforeRender = renderer => {
     const context = renderer.getContext();
     context.disable(context.SAMPLE_ALPHA_TO_COVERAGE);
   };
-  object2.onAfterRender = (renderer) => {
+  object2.onAfterRender = renderer => {
     const context = renderer.getContext();
     context.enable(context.SAMPLE_ALPHA_TO_COVERAGE);
   };
@@ -1845,18 +1843,18 @@ const _loadHtml = async (file, {contentId = null}) => {
   object.contentId = contentId;
   object.frustumCulled = false;
   object.isHtml = true;
-  let physicsIds = [];
-  let staticPhysicsIds = [];
+  const physicsIds = [];
+  const staticPhysicsIds = [];
   object.run = async () => {
     const physicsId = physicsManager.addBoxGeometry(
       object.position,
       object.quaternion,
       new THREE.Vector3(width * scale / 2, height * scale / 2, 0.1),
-      false
+      false,
     );
     physicsIds.push(physicsId);
     staticPhysicsIds.push(physicsId);
-    
+
     iframeContainer2.appendChild(iframe);
     sceneHighPriority.add(object2);
   };
@@ -1866,10 +1864,10 @@ const _loadHtml = async (file, {contentId = null}) => {
     }
     physicsIds.length = 0;
     staticPhysicsIds.length = 0;
-    
+
     iframeContainer2.removeChild(iframe);
     sceneHighPriority.remove(object2);
-    
+
     appManager.destroyApp(appId);
   };
   object.getPhysicsIds = () => physicsIds;
@@ -1881,7 +1879,7 @@ const _loadHtml = async (file, {contentId = null}) => {
       died: false,
     };
   };
-  
+
   const appId = appManager.getNextAppId();
   const app = appManager.createApp(appId);
   app.addEventListener('frame', e => {
@@ -1890,7 +1888,7 @@ const _loadHtml = async (file, {contentId = null}) => {
     object2.scale.copy(object.scale);
     // object2.matrix.copy(object.matrix);
     // object2.matrixWorld.copy(object.matrixWorld);
-    
+
     const cameraCSSMatrix =
       // 'translateZ(' + fov + 'px) ' +
       // `scale(${1/window.innerWidth}, ${1/window.innerHeight}) ` +
@@ -1898,30 +1896,30 @@ const _loadHtml = async (file, {contentId = null}) => {
         localMatrix.copy(camera.matrixWorldInverse)
           // .invert()
           .premultiply(
-            localMatrix2.makeTranslation(0, 0, fov)
+            localMatrix2.makeTranslation(0, 0, fov),
           )
           .multiply(
-            object.matrixWorld
-          )
-          /* .premultiply(
+            object.matrixWorld,
+          ),
+        /* .premultiply(
             localMatrix2.makeScale(1/window.innerWidth, -1/window.innerHeight, 1)
               .invert()
           ) */
-          // .invert()
+        // .invert()
       );
     iframeContainer2.style.transform = cameraCSSMatrix;
   });
   object.resize = _updateSize;
-  
+
   return object;
 };
 const _loadGlfs = async (file, {contentId = null}) => {
-  let srcUrl = file.url || URL.createObjectURL(file);
-  
+  const srcUrl = file.url || URL.createObjectURL(file);
+
   const res = await fetch(srcUrl);
   const text = await res.text();
   const shader = JSON.parse(text);
-  
+
   const fullscreenShader = new FullscreenShader(shader);
 
   const o = new THREE.Object3D();
@@ -1933,13 +1931,13 @@ const _loadGlfs = async (file, {contentId = null}) => {
     compositor.remove(fullscreenShader);
     appManager.destroyApp(appId);
   };
-  
+
   const appId = appManager.getNextAppId();
   const app = appManager.createApp(appId);
   app.addEventListener('frame', e => {
     fullscreenShader.pass.enabled = !!o.parent;
   });
-  
+
   return o;
 };
 const _loadGlbb = async (file, {parentUrl = null, contentId = null}) => {
@@ -1960,7 +1958,7 @@ const _loadGlbb = async (file, {parentUrl = null, contentId = null}) => {
     {
       size: 1024,
       worldSize: 2,
-    }
+    },
   );
   let loaded = false;
   (async () => {
@@ -1970,15 +1968,15 @@ const _loadGlbb = async (file, {parentUrl = null, contentId = null}) => {
   const o = shadertoyRenderer.mesh;
   o.contentId = contentId;
   // o.frustumCulled = false;
-  
-  let physicsIds = [];
-  let staticPhysicsIds = [];
+
+  const physicsIds = [];
+  const staticPhysicsIds = [];
   o.run = async () => {
     const physicsId = physicsManager.addBoxGeometry(
-      o.position,        
+      o.position,
       o.quaternion,
-      new THREE.Vector3(worldSize/2, worldSize/2, 0.01),
-      false
+      new THREE.Vector3(worldSize / 2, worldSize / 2, 0.01),
+      false,
     );
     physicsIds.push(physicsId);
     staticPhysicsIds.push(physicsId);
@@ -1999,7 +1997,7 @@ const _loadGlbb = async (file, {parentUrl = null, contentId = null}) => {
   const app = appManager.createApp(appId);
   app.addEventListener('frame', e => {
     if (loaded) {
-      shadertoyRenderer.update(e.data.timeDiff/1000);
+      shadertoyRenderer.update(e.data.timeDiff / 1000);
     }
   });
 
@@ -2010,7 +2008,7 @@ const _loadGlbb = async (file, {parentUrl = null, contentId = null}) => {
   if (files && _isResolvableUrl(srcUrl)) {
     srcUrl = files[_dotifyUrl(srcUrl)];
   }
-  
+
   const res = await fetch(srcUrl);
   const text = await res.text();
   const shader = JSON.parse(text);
@@ -2052,13 +2050,13 @@ const _loadGlbb = async (file, {parentUrl = null, contentId = null}) => {
   };
   o.destroy = () => {
     // appManager.destroyApp(appId);
-    
+
     for (const fn of componentUnloadFns) {
       fn();
     }
     componentUnloadFns.length = 0;
   };
-  
+
   return o;
 }; */
 /* const _loadMediaStream = async (file, {contentId = null}) => {
@@ -2088,8 +2086,8 @@ const _loadGlbb = async (file, {parentUrl = null, contentId = null}) => {
 }; */
 
 const _loadAudio = async (file, {contentId = null, instanceId = null, monetizationPointer = null, ownerAddress = null} = {}) => {
-  let srcUrl = file.url || URL.createObjectURL(file);
-  
+  const srcUrl = file.url || URL.createObjectURL(file);
+
   const audio = document.createElement('audio');
   audio.src = srcUrl;
   audio.loop = true;
