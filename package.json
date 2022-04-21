@@ -13,6 +13,10 @@
     "test": "cd test && npm run test",
     "start-pm2": "pm2-runtime index.mjs -p --secret $PM2_SECRET_KEY --public $PM2_PUBLIC_KEY --no-auto-exit --instances 1 --restart-delay 60000"
   },
+  "engines" : { 
+    "node" : ">=16.0.0",
+    "npm" : ">=7.0.0"
+  },
   "dependencies": {
     "@3id/connect": "^0.2.5",
     "@babel/preset-react": "^7.14.5",
